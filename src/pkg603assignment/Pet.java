@@ -8,8 +8,13 @@ package pkg603assignment;
  *
  * @author hughm
  */
-public class TestClass {
-    public static void main(String[] args) {
-        System.out.println("eeeeeeeppplcmpolt");
+public class Pet {
+    float age;
+    String name;
+    //other pet data
+    
+    public Pet(String name){
+        this.age = 0;
+        this.name = name;
     }
 }
