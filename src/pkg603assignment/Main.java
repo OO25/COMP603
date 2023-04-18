@@ -4,7 +4,15 @@
  */
 package pkg603assignment;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Scanner;
+
 
 /**
  *
@@ -27,8 +35,10 @@ public class Main {
         }
     }
 
-    public static void main(String[] args) throws InterruptedException {
-        welcome();
+    public static void main(String[] args) throws InterruptedException, FileNotFoundException, IOException {
+        CreateFile NewSave = new CreateFile();
+        String path = NewSave.getPath();
+        //welcome();
         while (true) {
             break;
         }
@@ -38,6 +48,44 @@ public class Main {
         for (int i = 0; i < 100; i++) { // console clear that works in IDE
             System.out.println("\b");
         }*/
-    }
+ 
+        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        
+        
+        System.out.println("ENTER NAME");
+        Scanner input = new Scanner(System.in);
+        String keyboard = input.nextLine();
+        Pet cat1 = new Cat(keyboard);
+        System.out.println("ENTER AGE");
+        cat1.age = input.nextInt();
+        
+        writeToFile(cat1, path);
 
 }
+    
+public static void writeToFile(Pet pet, String path) throws IOException {
+    
+        PrintWriter writer = new PrintWriter(new FileWriter(path, true));
+        writer.println("Name: " + pet.name);
+        writer.println("Age: " + pet.age);
+        writer.close();
+
+        
+        
+        
+ }
+}
+    
+
+      
+    
+
+
