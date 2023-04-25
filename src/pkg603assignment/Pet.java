@@ -11,10 +11,45 @@ package pkg603assignment;
 public class Pet {
     float age;
     String name;
-    //other pet data
+    String FavFood;
+    int happiness;
+    String emotion;
     
     public Pet(String name){
         this.age = 0;
         this.name = name;
+        this.emotion = "happy";
+        this.happiness = 5;
+        
+        if(this.happiness >= 5) {
+            this.emotion = "happy";
+        }
+        
+        if(this.happiness < 5 && this.happiness > 2) {
+            this.emotion = "sad";
+        }
+        
+        if(this.happiness <= 2) {
+            this.emotion = "angry";
+        }
+        
     }
+    
+    public void Happy() {
+        
+    }
+    
+    public void Sad() {
+        
+    }
+    
+    public void Angry() {
+        
+    }
+    
+    public void Asleep() {
+        
+    }
+    
+    
 }

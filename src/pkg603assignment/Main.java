@@ -18,7 +18,7 @@ import java.util.Scanner;
  *
  * @author Sandra
  */
-public class Main {
+public class Main { 
 
     public static void welcome() throws InterruptedException {
         Scanner input = new Scanner(System.in);
@@ -36,6 +36,13 @@ public class Main {
     }
 
     public static void main(String[] args) throws InterruptedException, FileNotFoundException, IOException {
+        
+        Player Andrew = new Player();
+        
+        
+        
+        
+        
         CreateFile NewSave = new CreateFile();
         String path = NewSave.getPath();
         //welcome();
@@ -52,22 +59,23 @@ public class Main {
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
             String line;
             while ((line = br.readLine()) != null) {
-                System.out.println(line);
+                //System.out.println(line);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
         
         
+       Fishing game = new Fishing();
+       game.play();
+       Andrew.largeFish = game.largeFish;
+       Andrew.medFish = game.medFish;
+       Andrew.smallFish = game.smallFish;
+       Pet naz = new Dog("NAZ");
+       PatPet.Pat(naz);
+       Shop shop = new Shop(Andrew);
+       shop.run();
         
-        System.out.println("ENTER NAME");
-        Scanner input = new Scanner(System.in);
-        String keyboard = input.nextLine();
-        Pet cat1 = new Cat(keyboard);
-        System.out.println("ENTER AGE");
-        cat1.age = input.nextInt();
-        
-        writeToFile(cat1, path);
 
 }
     
@@ -76,12 +84,10 @@ public static void writeToFile(Pet pet, String path) throws IOException {
         PrintWriter writer = new PrintWriter(new FileWriter(path, true));
         writer.println("Name: " + pet.name);
         writer.println("Age: " + pet.age);
-        writer.close();
-
-        
-        
-        
+        writer.close();      
  }
+
+    
 }
     
 
