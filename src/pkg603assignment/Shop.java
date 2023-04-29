@@ -80,18 +80,38 @@ public class Shop {
         int value;
         switch (input) {
             case 1:
-                value = 2;
-                break;
+                if(player.smallFish > 0) {
+                    value = 2;
+                    player.smallFish--;
+                    break;     
+                }
+                else {
+                    System.out.println("Not enough fish!");
+                }
+                
             case 2:
-                value = 3;
-                break;
+                if(player.medFish > 0) {
+                    value = 3;
+                    player.medFish--;
+                    break;     
+                }
+                else {
+                    System.out.println("Not enough fish!");
+                }
             case 3:
-                value = 5;
-                break;
+                if(player.largeFish > 0) {
+                    value = 5;
+                    player.largeFish--;
+                    break;     
+                }
+                else {
+                    System.out.println("Not enough fish!");
+                }
             default:
                 System.out.println("Invalid size!");
                 return;
         }
+        
         player.coins = player.coins + value;
         System.out.println("You sold a fish for " + value + " coins!");
     }

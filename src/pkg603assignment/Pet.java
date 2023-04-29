@@ -14,12 +14,14 @@ public class Pet {
     String FavFood;
     int happiness;
     String emotion;
+    int clean;
     
     public Pet(String name){
         this.age = 0;
         this.name = name;
         this.emotion = "happy";
         this.happiness = 5;
+        this.clean = 5;
         
         if(this.happiness >= 5) {
             this.emotion = "happy";

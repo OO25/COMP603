@@ -38,13 +38,7 @@ public class Main {
     public static void main(String[] args) throws InterruptedException, FileNotFoundException, IOException {
         
         Player Andrew = new Player();
-        
-        
-        
-        
-        
-        CreateFile NewSave = new CreateFile();
-        String path = NewSave.getPath();
+
         //welcome();
         while (true) {
             break;
@@ -55,43 +49,15 @@ public class Main {
         for (int i = 0; i < 100; i++) { // console clear that works in IDE
             System.out.println("\b");
         }*/
- 
-        try (BufferedReader br = new BufferedReader(new FileReader(path))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                //System.out.println(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        
-        
-       Fishing game = new Fishing();
-       game.play();
-       Andrew.largeFish = game.largeFish;
-       Andrew.medFish = game.medFish;
-       Andrew.smallFish = game.smallFish;
+
+
+
        Pet naz = new Dog("NAZ");
-       PatPet.Pat(naz);
-       Shop shop = new Shop(Andrew);
-       shop.run();
-        
+
+       CleanPet game = new CleanPet();
+       game.run(naz);
 
 }
-    
-public static void writeToFile(Pet pet, String path) throws IOException {
-    
-        PrintWriter writer = new PrintWriter(new FileWriter(path, true));
-        writer.println("Name: " + pet.name);
-        writer.println("Age: " + pet.age);
-        writer.close();      
- }
 
     
 }
-    
-
-      
-    
-
-
