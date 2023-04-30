@@ -4,26 +4,15 @@
  */
 package pkg603assignment;
 
-import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Scanner;
 
-//Thread.sleep(10000); to pause
 /**
  *
  * @author hughm
  */
 public class Main {
-
-    /*public static void load(){
-        
-        System.out.println(jsonHandler.MainSave);
-    }*/
     public static int welcome() throws InterruptedException {
         Scanner input = new Scanner(System.in);
         for (int i = 0; i < 10; i++) { // console clear that works in IDE
@@ -69,10 +58,10 @@ public class Main {
         if (welcomeResult == 1) { // Make a new Save
             saveID = (jsonHandler.MainSave.size() - 2) / 2 + 1;
             System.out.println("Create new save: \n");
-            System.out.println("What name do you want to assign to your save?\n");
+            System.out.println("What is your name?\n");
             String name = input.nextLine();
             player = new Player(name);
-            System.out.println("Do you want a cat or dog?");
+            System.out.println("Do you want a 1. cat or 2. dog?");
             int answer = input.nextInt();
             input.nextLine();
             if (answer == 1) {
@@ -166,29 +155,7 @@ public class Main {
                     System.out.println("Invalid input!");
                     Thread.sleep(1000);
                     break;
-
             }
-            //break;
         }
-        /*
-        jsonHandler.playerSaveTest(player);
-        
-        System.out.println(jsonHandler.MainSave);
-        System.out.println(jsonHandler.PlayerSave);
-        System.out.println(jsonHandler.PetSave);
-        jsonHandler.mainSave(0);
-        jsonHandler.saveMap();*/
-
-        //System.out.println("TESTING");
-        //System.out.println("testing 2");
-        /*
-        System.out.println("AMONG US");
-        for (int i = 0; i < 100; i++) { // console clear that works in IDE
-            System.out.println("\b");
-        }*/
-        //Pet naz = new Dog("NAZ");
-        //CleanPet game = new CleanPet();
-        //game.run(naz);
     }
-
 }

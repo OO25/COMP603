@@ -86,7 +86,7 @@ public class JsonHandler {
             in.close();
             fileIn.close();
         } catch (IOException i) {
-            System.out.println("didnt work");
+            System.out.println("didn't work");
         } catch (ClassNotFoundException c) {
             System.out.println("Not found");
         }
@@ -105,7 +105,6 @@ public class JsonHandler {
     public Pet loadPet(int id) {
         String name = (String) MainSave.get("Pet " + id).get("Name");
         String type = (String) MainSave.get("Pet " + id).get("Type");
-        System.out.println(type);
         if (type.equals("Dog")) {
             Pet newPet = new Dog(name);
             return newPet;
@@ -113,7 +112,6 @@ public class JsonHandler {
             Pet newPet = new Cat(name);
             return newPet;
         } else {
-            System.out.println("THIS ISNT GOOD THIS IS BAD AHHHHHH");
             Pet newPet = new Pet(name);
             return newPet;
         }
