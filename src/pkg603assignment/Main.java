@@ -13,51 +13,182 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
-
+//Thread.sleep(10000); to pause
 /**
  *
- * @author Sandra
+ * @author hughm
  */
-public class Main { 
+public class Main {
 
-    public static void welcome() throws InterruptedException {
+    /*public static void load(){
+        
+        System.out.println(jsonHandler.MainSave);
+    }*/
+    public static int welcome() throws InterruptedException {
         Scanner input = new Scanner(System.in);
+        for (int i = 0; i < 10; i++) { // console clear that works in IDE
+            System.out.println("\b");
+        }
         System.out.println("""
-                           Welcome to pet game!
-                           It is a game where you pet
-                           1. Select save 2. Quit""");
-        int response = input.nextInt();
-        if (response == 1) {
-            System.out.println("LETS GOOOOO");
-            Thread.sleep(10000);
-        } else if (response == 2) {
-            System.exit(0);
+                           ======================================
+                           |      Welcome to The Pet Game!      |
+                           |          Please Pick One:          |
+                           ======================================
+                           |                                    |
+                           |          1. New Game Save          |
+                           |         2. Load Game Save          |
+                           |            3. Quit Game            |
+                           |                                    |
+                           ======================================""");
+        while (true) {
+            int response = input.nextInt();
+            switch (response) {
+                case 1:
+                    return 1;
+                case 2:
+                    return 2;
+                case 3:
+                    System.out.println("Exiting Programe");
+                    System.exit(0);
+                default:
+                    System.out.println("Invalid Input Please Try Again: ");
+                    break;
+            }
         }
     }
 
     public static void main(String[] args) throws InterruptedException, FileNotFoundException, IOException {
-        
-        Player Andrew = new Player();
+        JsonHandler jsonHandler = new JsonHandler();
+        jsonHandler.loadMap();
+        Player player;
+        Pet pet;
+        int saveID;
+        Scanner input = new Scanner(System.in);
+        int welcomeResult = welcome();
 
-        //welcome();
-        while (true) {
-            break;
+        if (welcomeResult == 1) { // Make a new Save
+            saveID = (jsonHandler.MainSave.size() - 2) / 2 + 1;
+            System.out.println("Create new save: \n");
+            System.out.println("What name do you want to assign to your save?\n");
+            String name = input.nextLine();
+            player = new Player(name);
+            System.out.println("Do you want a cat or dog?");
+            int answer = input.nextInt();
+            input.nextLine();
+            if (answer == 1) {
+                System.out.println("What do you want to name your dog?\n");
+                String petName = input.nextLine();
+                pet = new Dog(petName);
+            } else {
+                System.out.println("What do you want to name your cat?\n");
+                String petName = input.nextLine();
+                pet = new Cat(petName);
+            }
+        } else { // Load an existing save
+            System.out.println("\nLoading game save...\n");
+            System.out.println("Which save to load?\n");
+            int options = (jsonHandler.MainSave.size() - 2) / 2;
+            for (int i = 0; i <= options; i++) { // display names of all saved profiles
+                String playerName = (String) jsonHandler.MainSave.get("Player " + i).get("Name");
+                int playerCoins = (int) jsonHandler.MainSave.get("Player " + i).get("Coins");
+                String petName = (String) jsonHandler.MainSave.get("Pet " + i).get("Name");
+                String petType = (String) jsonHandler.MainSave.get("Pet " + i).get("Type");
+                System.out.print(i + 1 + ": Player: " + playerName + " Coins: " + playerCoins
+                        + "\n   Pet : " + petName + " Type: " + petType + "\n\n");
+            }
+            while (true) {
+                int response = input.nextInt() - 1;
+                if ((response >= 0) && (response <= options)) {
+                    saveID = response;
+                    player = jsonHandler.loadPlayer(response); // load the player
+                    pet = jsonHandler.loadPet(response);
+                    break;
+                } else {
+                    System.out.println("Invalid input, try again!\n");
+                }
+            }
         }
-        System.out.println("TESTING");
-        System.out.println("testing 2");/*
+        Shop shop = new Shop(player);
+        CleanPet cleanPet = new CleanPet();
+        while (true) {
+            for (int i = 0; i < 10; i++) { // console clear that works in IDE
+                System.out.println("\b");
+            }
+            pet.Happy();
+            System.out.println("""
+                           ======================================
+                           |       This is the main menu!       |
+                           |          Please Pick One:          |
+                           ======================================
+                           |                                    |
+                           |            1. Show info            |
+                           |              2. Shop               |
+                           |             3. Pat pet             |
+                           |            4. Clean pet            |
+                           |              5. Fish               |
+                           |        6. Quit Game and Save       |
+                           |                                    |
+                           ======================================""");
+            Scanner scanner = new Scanner(System.in);
+            int choice = scanner.nextInt();
+            switch (choice) {
+                case 1:
+                    System.out.println("Player Info:");
+                    System.out.println(player.toString());
+                    System.out.println("\nPet Info:");
+                    System.out.println(pet.toString());
+                    System.out.println("\nPress anything to continue...");
+                    Scanner wait = new Scanner(System.in);
+                    String next = wait.nextLine();
+                    break;
+                case 2:
+                    shop.run();
+                    break;
+                case 3:
+                    PatPet.Pat(pet);
+                    break;
+                case 4:
+                    cleanPet.run(pet);
+                    break;
+                case 5:
+                    Fishing fishing = new Fishing();
+                    fishing.play();
+                    player.fish[0] += fishing.smallFish;
+                    player.fish[1] += fishing.medFish;
+                    player.fish[2] += fishing.largeFish;
+                    break;
+                case 6:
+                    jsonHandler.objectSave(player, pet);
+                    jsonHandler.mainSave(saveID);
+                    jsonHandler.saveMap();
+                    System.exit(0);
+                default:
+                    System.out.println("Invalid input!");
+                    Thread.sleep(1000);
+                    break;
+
+            }
+            //break;
+        }
+        /*
+        jsonHandler.playerSaveTest(player);
+        
+        System.out.println(jsonHandler.MainSave);
+        System.out.println(jsonHandler.PlayerSave);
+        System.out.println(jsonHandler.PetSave);
+        jsonHandler.mainSave(0);
+        jsonHandler.saveMap();*/
+
+        //System.out.println("TESTING");
+        //System.out.println("testing 2");
+        /*
         System.out.println("AMONG US");
         for (int i = 0; i < 100; i++) { // console clear that works in IDE
             System.out.println("\b");
         }*/
+        //Pet naz = new Dog("NAZ");
+        //CleanPet game = new CleanPet();
+        //game.run(naz);
+    }
 
-
-
-       Pet naz = new Dog("NAZ");
-
-       CleanPet game = new CleanPet();
-       game.run(naz);
-
-}
-
-    
 }

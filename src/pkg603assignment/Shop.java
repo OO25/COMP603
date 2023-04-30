@@ -80,9 +80,9 @@ public class Shop {
         int value;
         switch (input) {
             case 1:
-                if(player.smallFish > 0) {
+                if(player.fish[0] > 0) {
                     value = 2;
-                    player.smallFish--;
+                    player.fish[0]--;
                     break;     
                 }
                 else {
@@ -90,18 +90,18 @@ public class Shop {
                 }
                 
             case 2:
-                if(player.medFish > 0) {
+                if(player.fish[1] > 0) {
                     value = 3;
-                    player.medFish--;
+                    player.fish[1]--;
                     break;     
                 }
                 else {
                     System.out.println("Not enough fish!");
                 }
             case 3:
-                if(player.largeFish > 0) {
+                if(player.fish[2] > 0) {
                     value = 5;
-                    player.largeFish--;
+                    player.fish[2]--;
                     break;     
                 }
                 else {

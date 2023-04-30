@@ -52,6 +52,14 @@ public class Pet {
     public void Asleep() {
         
     }
-    
+    @Override
+    public String toString(){
+        return "Name: "+ this.name
+                +"\nAge: "+this.age
+                +"\nEmotion: "+this.emotion
+                +"\nFav food: "+this.FavFood
+                +"\nHappiness: "+this.happiness
+                +"\nClean: "+this.clean;
+    }
     
 }
