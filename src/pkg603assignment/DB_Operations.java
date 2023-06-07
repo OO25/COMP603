@@ -70,8 +70,17 @@ public class DB_Operations {
         try {
             Statement statement = dbManager.getConnection().createStatement();
 
-            String sql = "UPDATE PlayerData SET Coins = " + player.coins+ " WHERE PLAYERNAME = '" + player.name +"' " ;
-            
+            String sql = "UPDATE PlayerData "
+                    + "SET Coins = " + player.coins+ ","
+                    + "FISH = " + player.fish + "," 
+                    + "BONES =" + player.bones + ","
+                    + "KIBBLE =" + player.kibble + ","
+                    + "SPECIES = '"+ player.pet.species + "' ,"
+                    + "AGE ="+ player.pet.age + ","
+                    + "PETNAME = '"+ player.pet.name + "' ,"
+                    + "HAPPINESS =" + player.pet.happiness + " "
+                    + "WHERE PLAYERNAME = '"+ player.name +"'";
+
             
             int rowsAffected = statement.executeUpdate(sql);
             
@@ -116,11 +125,13 @@ public class DB_Operations {
      
     public static void main(String[] args) {
         
-        Player player = new Player(null);
+        Player andrew = new Player("Andrew");
+        andrew.pet = new Dog("Billy");
+        
        
 
         DB_Operations dboperations = new DB_Operations();
-        dboperations.loadPlayer("TEST");
+        dboperations.playerSave(andrew);
        
 
         dboperations.dbManager.closeConnections();
