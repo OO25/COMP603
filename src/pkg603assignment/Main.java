@@ -154,9 +154,9 @@ public class Main {
                 case 5:
                     Fishing fishing = new Fishing();
                     fishing.play();
-                    player.fish[0] += fishing.smallFish;
-                    player.fish[1] += fishing.medFish;
-                    player.fish[2] += fishing.largeFish;
+                    player.fish += fishing.smallFish;
+                    player.fish += fishing.medFish;
+                    player.fish += fishing.largeFish;
                     break;
                 case 6:
                     jsonHandler.objectSave(player, pet);
