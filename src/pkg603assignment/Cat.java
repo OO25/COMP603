@@ -13,6 +13,7 @@ public class Cat extends Pet {
     public Cat(String name) {
         super(name);
         FavFood = "Fish";
+        species = "cat";
     }
     
     @Override

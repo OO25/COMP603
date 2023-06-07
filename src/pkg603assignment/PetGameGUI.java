@@ -200,6 +200,7 @@ public class PetGameGUI implements ItemListener {
         panel.add(buttonE);
         
         JButton buttonF = new JButton("Quit game and save");
+        
         panel.add(buttonF);
         
         ActionListener al = new ActionListener() {

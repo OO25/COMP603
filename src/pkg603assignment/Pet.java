@@ -9,12 +9,13 @@ package pkg603assignment;
  * @author hughm
  */
 public class Pet {
-    float age;
+    int age;
     String name;
     String FavFood;
     int happiness;
     String emotion;
     int clean;
+    String species;
     
     public Pet(String name){
         this.age = 0;
@@ -60,6 +61,22 @@ public class Pet {
                 +"\nFav food: "+this.FavFood
                 +"\nHappiness: "+this.happiness
                 +"\nClean: "+this.clean;
+    }
+
+    public void setSpecies(String species) {
+        this.species = species;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setHappiness(int happiness) {
+        this.happiness = happiness;
     }
     
 }

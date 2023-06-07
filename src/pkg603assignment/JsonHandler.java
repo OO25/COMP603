@@ -36,7 +36,7 @@ public class JsonHandler {
         MainSave.put("Pet " + id, PetSaveCopy);
     }
 
-    public void playerSave(String name, int coins, int[] fish, int bones, int kibble) {
+    public void playerSave(String name, int coins, int fish, int bones, int kibble) {
         PlayerSave.put("Name", name);
         PlayerSave.put("Coins", coins);
         PlayerSave.put("Fish", fish);
@@ -95,7 +95,7 @@ public class JsonHandler {
     public Player loadPlayer(int id) {
         String name = (String) MainSave.get("Player " + id).get("Name");
         int coins = (int) MainSave.get("Player " + id).get("Coins");
-        int[] fish = (int[]) MainSave.get("Player " + id).get("Fish");
+        int fish = (int) MainSave.get("Player " + id).get("Fish");
         int bones = (int) MainSave.get("Player " + id).get("Bones");
         int kibble = (int) MainSave.get("Player " + id).get("Kibble");
         Player newPlayer = new Player(name, coins, fish, bones, kibble);
@@ -120,7 +120,7 @@ public class JsonHandler {
 
     public static void main(String[] args) {
         JsonHandler test = new JsonHandler();
-        int[] fish = new int[]{1, 2, 3};
+        int fish = 0;
 
         test.playerSave("John", 50, fish, 0, 0);
         test.petSave("Sparky", 3, 12, "Dog");

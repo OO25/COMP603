@@ -7,28 +7,40 @@ package pkg603assignment;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  *
  * @author hughm
  */
 public class Main {
+    
+    
+
+   
+   
+        
+    
     public static int welcome() throws InterruptedException {
         Scanner input = new Scanner(System.in);
         for (int i = 0; i < 10; i++) { // console clear that works in IDE
             System.out.println("\b");
         }
-        System.out.println("""
-                           ======================================
-                           |      Welcome to The Pet Game!      |
-                           |          Please Pick One:          |
-                           ======================================
-                           |                                    |
-                           |          1. New Game Save          |
-                           |         2. Load Game Save          |
-                           |            3. Quit Game            |
-                           |                                    |
-                           ======================================""");
+        System.out.println("");
+        System.out.println( "                  ======================================");
+        System.out.println( "                  |      Welcome to The Pet Game!      |");
+        System.out.println( "                  |          Please Pick One:          |");
+        System.out.println( "                  ======================================");
+        System.out.println( "                  |                                    |");
+        System.out.println( "                  |          1. New Game Save          |");
+        System.out.println( "                 |         2. Load Game Save          |");
+        System.out.println( "                  |            3. Quit Game            |");
+         System.out.println( "                 |                                    |");
+        System.out.println( "                  ======================================");
         while (true) {
             int response = input.nextInt();
             switch (response) {
@@ -104,20 +116,20 @@ public class Main {
                 System.out.println("\b");
             }
             pet.Happy();
-            System.out.println("""
-                           ======================================
-                           |       This is the main menu!       |
-                           |          Please Pick One:          |
-                           ======================================
-                           |                                    |
-                           |            1. Show info            |
-                           |              2. Shop               |
-                           |             3. Pat pet             |
-                           |            4. Clean pet            |
-                           |              5. Fish               |
-                           |        6. Quit Game and Save       |
-                           |                                    |
-                           ======================================""");
+            System.out.println("");
+            System.out.println("               ======================================");
+            System.out.println( "              |       This is the main menu!       |");
+            System.out.println( "              |          Please Pick One:          |");
+            System.out.println("               ======================================");
+            System.out.println( "              |                                    |");
+            System.out.println( "              |            1. Show info            |");
+            System.out.println( "              |              2. Shop               |");
+            System.out.println( "              |             3. Pat pet             |");
+            System.out.println( "              |            4. Clean pet            |");
+            System.out.println(  "             |              5. Fish               |");
+            System.out.println( "              |        6. Quit Game and Save       |");
+            System.out.println( "              |                                    |");
+            System.out.println( "              ======================================");
             Scanner scanner = new Scanner(System.in);
             int choice = scanner.nextInt();
             switch (choice) {
