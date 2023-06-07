@@ -52,7 +52,7 @@ public class DB_Operations {
             // Set the values for the parameters from the Player object
             statement.setString(1, player.name);
             statement.setInt(2, player.coins);
-            statement.setInt(3, player.fishTest);
+            statement.setInt(3, player.fish);
             statement.setInt(4, player.bones);
             statement.setInt(5, player.kibble);
 
@@ -86,7 +86,8 @@ public class DB_Operations {
      
     public Player loadPlayer(String playerName) {
         Player player = new Player(playerName);
-        ResultSet rs = dbManager.myQuery("select * from PLAYERDATA where PLAYERNAME = TEST");
+        player.pet = new Pet(null);
+        ResultSet rs = dbManager.myQuery("select * from PLAYERDATA where PLAYERNAME = '" + playerName + "'");
 
         if (rs == null) {
             return null;
@@ -99,9 +100,9 @@ public class DB_Operations {
                 player.setFish(rs.getInt("FISH"));  
                 player.setBones(rs.getInt("BONES"));
                 player.setKibble(rs.getInt("BONES"));
+                player.pet = new Pet(rs.getString("PETNAME"));
                 player.pet.setSpecies(rs.getString("SPECIES"));
                 player.pet.setAge(rs.getInt("AGE"));
-                player.pet.setName(rs.getString("PETNAME"));
                 player.pet.setHappiness(rs.getInt("HAPPINESS"));                        
             }
 
@@ -119,7 +120,7 @@ public class DB_Operations {
        
 
         DB_Operations dboperations = new DB_Operations();
-        dboperations.loadPlayer("TEST1");
+        dboperations.loadPlayer("TEST");
        
 
         dboperations.dbManager.closeConnections();
