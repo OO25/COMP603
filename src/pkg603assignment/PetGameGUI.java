@@ -203,10 +203,7 @@ public class PetGameGUI implements ItemListener {
                         that if statement is the pet type (see which in print)
                         if we have time probably get username to remove leading white space
                         */
-                        System.out.println("user name: "+ userName.getText());
-                        player.name = userName.getText().trim();
-                        pet.name = petName.getText().trim();
-                        System.out.println("pet name: "+petName.getText());
+                        player = new Player(userName.getText().trim());
                         if(cat.isSelected()){
                             System.out.println("Pet type: cat");
                             pet = new Cat(petName.getText().trim());
@@ -214,6 +211,7 @@ public class PetGameGUI implements ItemListener {
                             pet = new Dog(petName.getText().trim());
                             System.out.println("Pet type: dog");
                         }
+                        finalPrep();
                         cl.show(cards, MAINPANEL);
                     }
                 }
@@ -297,8 +295,15 @@ public class PetGameGUI implements ItemListener {
             public void actionPerformed(ActionEvent e) {
                 CardLayout cl = (CardLayout)(cards.getLayout());
                 if(e.getSource() == finishButton){
+                    /**
+                     * to make this work we need to turn the saves into an array and then
+                     * use the user inputted choice of save (given by the selectedSaveSlot variable)
+                     * then we can load everything and define the player with player name
+                     * and pet with pet name and assign all of the values that can change from the start
+                     */
                     System.out.println("Selet File");
                     selectedSaveSlot = saveList.getSelectedIndex();
+                    finalPrep();
                     cl.show(cards, MAINPANEL);
                 }else if (e.getSource() == saveList){
                     System.out.println(saveList.getSelectedIndex()+" selected");
@@ -364,6 +369,10 @@ public class PetGameGUI implements ItemListener {
                     cl.show(cards, FISHPANEL);
                     System.out.println("show fishing game");
                 } else if (e.getSource() == buttonF){
+                    /**
+                     * to make this work we just need to run some kind of save function
+                     * should be easy :)
+                     */
                     System.out.println("Game Exited");
                     System.exit(0);
                 } else {
@@ -916,19 +925,8 @@ public class PetGameGUI implements ItemListener {
         
         return panel;
     }
-    public void cardCreate(Container pane){
-        JPanel comboBoxPane = new JPanel();
-        String comboBoxItems[] = {WELCOMPANEL, NEWSAVEPANEL, MAINPANEL, SHOWINFOPANEL, SHOPPANEL, PATPETPANEL, CLEANPETPANEL, FISHPANEL};
-        JComboBox cb = new JComboBox(comboBoxItems);
-        cb.setEditable(false);
-        cb.addItemListener(this);
-        comboBoxPane.add(cb);
-        player = new Player("test player");
-        pet = new Pet("PLACEHOLDER");
-        // create the cards
-        JPanel card1 = welcome();
-        JPanel card2 = newSave();
-        JPanel card3 = loadSave();
+    
+    public void finalPrep(){
         JPanel card4 = mainMenu();
         JPanel card5 = showInfo();
         JPanel card6 = shopMenu();
@@ -936,19 +934,47 @@ public class PetGameGUI implements ItemListener {
         JPanel card8 = cleanPet();
         JPanel card9 = fishGame();
         
-        
-        cards = new JPanel(new CardLayout());
-        cards.add(card1, WELCOMPANEL);
-        cards.add(card2, NEWSAVEPANEL);
-        cards.add(card3, LOADSAVEPANEL);
         cards.add(card4, MAINPANEL);
         cards.add(card5, SHOWINFOPANEL);
         cards.add(card6, SHOPPANEL);
         cards.add(card7, PATPETPANEL);
         cards.add(card8, CLEANPETPANEL);
         cards.add(card9, FISHPANEL);
+    }
+    
+    public void cardCreate(Container pane){
+        JPanel comboBoxPane = new JPanel();
+        String comboBoxItems[] = {WELCOMPANEL, NEWSAVEPANEL, MAINPANEL, SHOWINFOPANEL, SHOPPANEL, PATPETPANEL, CLEANPETPANEL, FISHPANEL};
+        JComboBox cb = new JComboBox(comboBoxItems);
+        cb.setEditable(false);
+        cb.addItemListener(this);
+        comboBoxPane.add(cb);
+        /*player = new Player("test player");
+        pet = new Pet("PLACEHOLDER"); */
+        // create the cards
+        JPanel card1 = welcome();
+        JPanel card2 = newSave();
+        JPanel card3 = loadSave();
+        /*JPanel card4 = mainMenu();
+        JPanel card5 = showInfo();
+        JPanel card6 = shopMenu();
+        JPanel card7 = patPet();
+        JPanel card8 = cleanPet();
+        JPanel card9 = fishGame();*/
         
-        //pane.add(comboBoxPane,BorderLayout.PAGE_END);
+        
+        cards = new JPanel(new CardLayout());
+        cards.add(card1, WELCOMPANEL);
+        cards.add(card2, NEWSAVEPANEL);
+        cards.add(card3, LOADSAVEPANEL);
+        /*cards.add(card4, MAINPANEL);
+        cards.add(card5, SHOWINFOPANEL);
+        cards.add(card6, SHOPPANEL);
+        cards.add(card7, PATPETPANEL);
+        cards.add(card8, CLEANPETPANEL);
+        cards.add(card9, FISHPANEL);*/
+        
+        pane.add(comboBoxPane,BorderLayout.PAGE_END);
         pane.add(cards,BorderLayout.CENTER);
     
     }
