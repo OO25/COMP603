@@ -46,15 +46,19 @@ public class DB_Operations {
     public void insertPlayer(Player player) {
         try {
             // Prepare SQL statement for insertion
-            String sql = "INSERT INTO PlayerData (Playername, coins, fish, bones, kibble) VALUES (?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO PlayerData (Playername, coins, fish, bones, kibble, species, age, petname, happiness) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement statement = dbManager.getConnection().prepareStatement(sql);
 
             // Set the values for the parameters from the Player object
-            statement.setString(1, player.name);
+            statement.setString(1, player.name.toLowerCase());
             statement.setInt(2, player.coins);
             statement.setInt(3, player.fish);
             statement.setInt(4, player.bones);
             statement.setInt(5, player.kibble);
+            statement.setString(6, player.pet.species.toLowerCase());
+            statement.setInt(7, player.pet.age);
+            statement.setString(8, player.pet.name.toLowerCase());
+            statement.setInt(9, player.pet.happiness);
 
             // Execute the insertion
             statement.executeUpdate();
@@ -75,11 +79,11 @@ public class DB_Operations {
                     + "FISH = " + player.fish + "," 
                     + "BONES =" + player.bones + ","
                     + "KIBBLE =" + player.kibble + ","
-                    + "SPECIES = '"+ player.pet.species + "' ,"
+                    + "SPECIES = '"+ player.pet.species.toLowerCase() + "' ,"
                     + "AGE ="+ player.pet.age + ","
-                    + "PETNAME = '"+ player.pet.name + "' ,"
+                    + "PETNAME = '"+ player.pet.name.toLowerCase() + "' ,"
                     + "HAPPINESS =" + player.pet.happiness + " "
-                    + "WHERE PLAYERNAME = '"+ player.name +"'";
+                    + "WHERE PLAYERNAME = '"+ player.name.toLowerCase() +"'";
 
             
             int rowsAffected = statement.executeUpdate(sql);
@@ -125,13 +129,23 @@ public class DB_Operations {
      
     public static void main(String[] args) {
         
-        Player andrew = new Player("Andrew");
-        andrew.pet = new Dog("Billy");
+        Player player = new Player("Andrew");
+        player.pet = new Cat("Billy");
+        player.coins = 55;
+        player.pet.species = "CAT";
+        
         
        
 
         DB_Operations dboperations = new DB_Operations();
-        dboperations.playerSave(andrew);
+        
+        dboperations.insertPlayer(player);
+        
+        //player = dboperations.loadPlayer("Andrew");
+        
+        
+        System.out.println(player);
+        
        
 
         dboperations.dbManager.closeConnections();
