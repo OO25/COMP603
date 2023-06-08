@@ -181,7 +181,7 @@ public class PetGameGUI implements ItemListener {
             public void actionPerformed(ActionEvent e) {
                 CardLayout cl = (CardLayout)(cards.getLayout());
                 if(e.getSource() == finishButton){
-                    if(!userName.getText().isBlank() && !petName.getText().isBlank()){
+                    if(!userName.getText().isEmpty() && !petName.getText().isEmpty() && userName.getText().trim().length() > 0){
                         /*
                         this is where the save to data base needs to go
                         "userName.getText()" is the user name
@@ -228,7 +228,7 @@ public class PetGameGUI implements ItemListener {
             }
             
             public void changed(){
-                if(!userName.getText().isBlank() && !petName.getText().isBlank())
+                if(!userName.getText().isEmpty() && !petName.getText().isEmpty())
                     finishButton.setEnabled(true);
                 else
                     finishButton.setEnabled(false);
