@@ -12,7 +12,7 @@ public class Cat extends Pet {
     
     public Cat(String name) {
         super(name);
-        FavFood = "Fish";
+        FavFood = "Kibble";
         species = "cat";
     }
     
