@@ -77,7 +77,7 @@ public class Shop {
     private void sellFish() {
         System.out.println("What size is the fish? (1 = small, 2 = medium, 3 = big)");
         int input = scanner.nextInt();
-        int value;
+        int value;/*
         switch (input) {
             case 1:
                 if(player.fish[0] > 0) {
@@ -110,8 +110,8 @@ public class Shop {
             default:
                 System.out.println("Invalid size!");
                 return;
-        }
-        
+        }*/
+        value = 3;
         player.coins = player.coins + value;
         System.out.println("You sold a fish for " + value + " coins!");
     }

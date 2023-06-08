@@ -16,6 +16,7 @@ public class Pet {
     String emotion;
     int clean;
     String species;
+    int fish;
     
     public Pet(String name){
         this.age = 0;
@@ -23,6 +24,7 @@ public class Pet {
         this.emotion = "happy";
         this.happiness = 5;
         this.clean = 5;
+        this.fish = 0;
         
         if(this.happiness >= 5) {
             this.emotion = "happy";
@@ -77,6 +79,16 @@ public class Pet {
 
     public void setHappiness(int happiness) {
         this.happiness = happiness;
+    }
+    
+    public void changeHappiness(){
+        if(this.happiness >= 5) {
+            this.emotion = "happy";
+        }else if(this.happiness < 5 && this.happiness > 2) {
+            this.emotion = "sad";
+        }else if(this.happiness <= 2) {
+            this.emotion = "angry";
+        }
     }
     
 }

@@ -7,6 +7,7 @@ package pkg603assignment;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.event.*;
 
 /**
  *
@@ -17,14 +18,52 @@ public class PetGameGUI implements ItemListener {
     JPanel cards;
     final static String WELCOMPANEL = "Card with Welcome manu buttons";
     final static String NEWSAVEPANEL = "Card with info for creating new save file";
+    final static String LOADSAVEPANEL = "Card with info for loading a save file";
     final static String MAINPANEL = "Card with the main menu buttons";
+    final static String SHOWINFOPANEL = "Card that displays game info";
+    final static String SHOPPANEL = "Card that displays the shop";
+    final static String PATPETPANEL = "Card that allows the player to pat their pet";
+    final static String CLEANPETPANEL = "Card that allows the player to clean their pet";
+    final static String FISHPANEL = "Card for the fishing minigame";
     
     public static int SCREENWIDTH = 640;
     public static int SCREENHEIGHT = 480;
     
+    int selectedSaveSlot;
+    Player player;
+    Pet pet;
+    
     private JButton newButton(String lable){
         JButton button = new JButton(lable);
         return button;
+    }
+    /*
+    ImageIcon icon = new ImageIcon("sprites/catHappy.png");
+        panel.add(new JLabel(icon));
+    */
+    /*
+    to add add a jlabel to the panel and then add logic to allow it to change after
+    a change could have been made
+    */
+    private ImageIcon petEmotion(){
+        ImageIcon image;
+        String source;
+        String PET = pet.species;
+        switch(pet.emotion){
+            case "happy":
+                image = new ImageIcon("sprites/"+PET+"Happy.png");
+                break;
+            case "sad":
+                image = new ImageIcon("sprites/"+PET+"Sad.png");
+                break;
+            case "angry":
+                image = new ImageIcon("sprites/"+PET+"Angry.png");
+                break;
+            default:
+                image = new ImageIcon("sprites/"+PET+"Sleep.png");
+                break;
+        }
+        return image;
     }
     
     private JPanel welcome(){
@@ -53,12 +92,13 @@ public class PetGameGUI implements ItemListener {
         ActionListener al = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                CardLayout cl = (CardLayout)(cards.getLayout());
                 if (e.getSource() == buttonA) {
-                    CardLayout cl = (CardLayout)(cards.getLayout());
+                    //CardLayout cl = (CardLayout)(cards.getLayout());
                     cl.show(cards, NEWSAVEPANEL);
                     //cl.last(cards);
                 } else if (e.getSource() == buttonB) {
-                    System.out.println("B");
+                    cl.show(cards, LOADSAVEPANEL);
                 } else if (e.getSource() == buttonC){
                     System.out.println("Program closed");
                     System.exit(0);
@@ -147,19 +187,39 @@ public class PetGameGUI implements ItemListener {
         con.gridx = 0;
         con.gridy = 4;
         con.gridwidth = 3;
+        finishButton.setEnabled(false);
         panel.add(finishButton, con);
         
         ActionListener al = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                CardLayout cl = (CardLayout)(cards.getLayout());
                 if(e.getSource() == finishButton){
-                    System.out.println("finish setup");
+                    if(!userName.getText().isBlank() && !petName.getText().isBlank()){
+                        /*
+                        this is where the save to data base needs to go
+                        "userName.getText()" is the user name
+                        "petName.getText()" is the pet name
+                        that if statement is the pet type (see which in print)
+                        if we have time probably get username to remove leading white space
+                        */
+                        System.out.println("user name: "+ userName.getText());
+                        player.name = userName.getText().trim();
+                        pet.name = petName.getText().trim();
+                        System.out.println("pet name: "+petName.getText());
+                        if(cat.isSelected()){
+                            System.out.println("Pet type: cat");
+                            pet = new Cat(petName.getText().trim());
+                        }else{
+                            pet = new Dog(petName.getText().trim());
+                            System.out.println("Pet type: dog");
+                        }
+                        cl.show(cards, MAINPANEL);
+                    }
                 }
                 if(cat.isSelected()){
-                    System.out.println("cat");
                     petNameText.setText("What do you want to name your cat?");
                 } else if(dog.isSelected()){
-                    System.out.println("dog");
                     petNameText.setText("What do you want to name your dog?");
                 }
             }
@@ -167,22 +227,103 @@ public class PetGameGUI implements ItemListener {
         cat.addActionListener(al);
         dog.addActionListener(al);
         finishButton.addActionListener(al);
-        
+        DocumentListener dl =  new DocumentListener(){
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                changed();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                changed();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                changed();
+            }
+            
+            public void changed(){
+                if(!userName.getText().isBlank() && !petName.getText().isBlank())
+                    finishButton.setEnabled(true);
+                else
+                    finishButton.setEnabled(false);
+            }
+        };
+        userName.getDocument().addDocumentListener(dl);
+        petName.getDocument().addDocumentListener(dl);
         
         
         return panel;
     }
     
+    private JPanel loadSave(){
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridBagLayout());
+        //panel.setLayout(null);
+        //panel.setLayout(new GridLayout(0,2));
+        panel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        GridBagConstraints con = new GridBagConstraints();
+        String[] saveStrings = {"temp 1", "temp 2", "temp 3", "temp 4"};
+        
+        con.fill = GridBagConstraints.HORIZONTAL;
+        con.gridx = 0;
+        con.gridy = 0;
+        //panel.add(Box.createHorizontalGlue(), con);
+        
+        
+        JLabel newSaveLabel = new JLabel("<html><h1>Load Existing save:</h1></html>",JLabel.CENTER);
+        con.fill = GridBagConstraints.HORIZONTAL;
+        con.gridx = 0;
+        con.gridy = 0;
+        con.gridwidth = 3;
+        con.weightx = 0;
+        panel.add(newSaveLabel, con);
+        
+        // combo box
+        JComboBox saveList = new JComboBox(saveStrings);
+        con.gridx = 0;
+        con.gridy = 1;
+        con.gridwidth = 3;
+        panel.add(saveList, con);
+        
+        JButton finishButton = new JButton("Confirm");
+        con.gridx = 0;
+        con.gridy = 4;
+        con.gridwidth = 3;
+        panel.add(finishButton, con);
+        ActionListener al = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CardLayout cl = (CardLayout)(cards.getLayout());
+                if(e.getSource() == finishButton){
+                    System.out.println("Selet File");
+                    selectedSaveSlot = saveList.getSelectedIndex();
+                    cl.show(cards, MAINPANEL);
+                }else if (e.getSource() == saveList){
+                    System.out.println(saveList.getSelectedIndex()+" selected");
+                }
+            }
+            //selectedIndex = 1;
+        };
+        saveList.addActionListener(al);
+        finishButton.addActionListener(al);
+        
+        return panel;
+    }
     private JPanel mainMenu(){
         int ButtonWidth = 300;
         int ButtonHeight = 25;
         JPanel panel = new JPanel();
         //panel.setLayout(null);
-        panel.setLayout(new GridLayout(0,2, 10, 10));
+        panel.setLayout(new GridLayout(0,2));//, 10, 10));
         panel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
         
         JLabel welcomeLabel = new JLabel("<html><div style='text-align:center'><h1>This is the main menu!</h1><p>Please Pick One:</html>", SwingConstants.CENTER);
         panel.add(welcomeLabel);
+        
+        JLabel petImage = new JLabel(petEmotion());
+        panel.add(petImage);
         
         JButton buttonA = new JButton("Show info");
         panel.add(buttonA);
@@ -206,15 +347,21 @@ public class PetGameGUI implements ItemListener {
         ActionListener al = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                CardLayout cl = (CardLayout)(cards.getLayout());
                 if (e.getSource() == buttonA) {
                     System.out.println("show info");
+                    cl.show(cards, SHOWINFOPANEL);
                 } else if (e.getSource() == buttonB) {
                     System.out.println("show shop");
+                    cl.show(cards, SHOPPANEL);
                 } else if (e.getSource() == buttonC){
                     System.out.println("show pat pet");
+                    cl.show(cards, PATPETPANEL);
                 } else if (e.getSource() == buttonD){
                     System.out.println("show clean pet");
+                    cl.show(cards, CLEANPETPANEL);
                 } else if (e.getSource() == buttonE){
+                    cl.show(cards, FISHPANEL);
                     System.out.println("show fishing game");
                 } else if (e.getSource() == buttonF){
                     System.out.println("Game Exited");
@@ -231,31 +378,579 @@ public class PetGameGUI implements ItemListener {
         buttonE.addActionListener(al);
         buttonF.addActionListener(al);
         
+        ComponentAdapter ca = new ComponentAdapter(){
+            @Override
+            public void componentShown(ComponentEvent e){
+                petImage.setIcon(petEmotion());
+            }
+        };
+        panel.addComponentListener(ca);
+        
         return panel;
     }
     
+    private JPanel showInfo(){
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridBagLayout());
+        //panel.setLayout(null);
+        //panel.setLayout(new GridLayout(0,2));
+        panel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        GridBagConstraints con = new GridBagConstraints();
+        
+        con.fill = GridBagConstraints.HORIZONTAL;
+        con.gridx = 0;
+        con.gridy = 0;
+        //panel.add(Box.createHorizontalGlue(), con);
+        
+        
+        JLabel playerInfoHeaderLabel = new JLabel("<html><h1>Player Info:</h1></html>",JLabel.CENTER);
+        con.fill = GridBagConstraints.HORIZONTAL;
+        con.gridx = 0;
+        con.gridy = 0;
+        con.gridwidth = 3;
+        con.weightx = 0;
+        panel.add(playerInfoHeaderLabel, con);
+        
+        JLabel playerInfoLabel = new JLabel("<html><div style='text-align:center'>"+player.toString().replaceAll("\n", "<p>")+"</html>",JLabel.CENTER);
+        con.fill = GridBagConstraints.HORIZONTAL;
+        con.gridx = 0;
+        con.gridy = 1;
+        con.gridwidth = 3;
+        con.weightx = 0;
+        panel.add(playerInfoLabel, con);
+        
+        JLabel petInfoHeaderLabel = new JLabel("<html><h1>Pet Info:</h1></html>",JLabel.CENTER);
+        con.fill = GridBagConstraints.HORIZONTAL;
+        con.gridx = 0;
+        con.gridy = 2;
+        con.gridwidth = 3;
+        con.weightx = 0;
+        panel.add(petInfoHeaderLabel, con);
+        
+        JLabel petInfoLabel = new JLabel("<html><div style='text-align:center'>"+pet.toString().replaceAll("\n", "<p>")+"</html>",JLabel.CENTER);
+        con.fill = GridBagConstraints.HORIZONTAL;
+        con.gridx = 0;
+        con.gridy = 3;
+        con.gridwidth = 3;
+        con.weightx = 0;
+        panel.add(petInfoLabel, con);
+        
+        JButton backButton = new JButton("Back to Main Menu");
+        con.gridx = 0;
+        con.gridy = 4;
+        con.gridwidth = 3;
+        panel.add(backButton, con);
+        
+        ActionListener al = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CardLayout cl = (CardLayout)(cards.getLayout());
+                if(e.getSource() == backButton){
+                    System.out.println("Returning to main menu");
+                    cl.show(cards, MAINPANEL);
+                }
+            }
+        };
+        backButton.addActionListener(al);
+        
+        ComponentAdapter ca = new ComponentAdapter(){
+            @Override
+            public void componentShown(ComponentEvent e){
+                playerInfoLabel.setText("<html><div style='text-align:center'>"+player.toString().replaceAll("\n", "<p>")+"</html>");
+                petInfoLabel.setText("<html><div style='text-align:center'>"+pet.toString().replaceAll("\n", "<p>")+"</html>");
+            }
+        };
+        panel.addComponentListener(ca);
+        
+        return panel;
+    }
+    
+    private JPanel shopMenu(){
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridBagLayout());
+        //panel.setLayout(null);
+        //panel.setLayout(new GridLayout(0,2));
+        panel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        GridBagConstraints con = new GridBagConstraints();
+        
+        con.fill = GridBagConstraints.HORIZONTAL;
+        con.gridx = 0;
+        con.gridy = 0;
+        
+        JLabel shopHeader = new JLabel("<html><div style='text-align:center;'><h1>Welcome to the pet shop!</h1>"
+                + "<h3>You have "+player.coins+" coins.<br/>What would you like to do?</h3></html>",JLabel.CENTER);
+        con.fill = GridBagConstraints.HORIZONTAL;
+        con.gridx = 0;
+        con.gridy = 0;
+        con.gridwidth = 3;
+        con.weightx = 3;
+        panel.add(shopHeader, con);
+        
+        JButton buyBones = new JButton("Buy bones (Costs 5 coins)");
+        con.gridx = 0;
+        con.gridy = 1;
+        con.gridwidth = 3;
+        panel.add(buyBones, con);
+        
+        JButton buyKibble = new JButton("Buy kibble (Costs 2 coins)");
+        con.gridx = 0;
+        con.gridy = 2;
+        con.gridwidth = 3;
+        panel.add(buyKibble, con);
+        
+        JButton sellFish = new JButton("Sell fish (Worth 2 coins each)");
+        con.gridx = 0;
+        con.gridy = 3;
+        con.gridwidth = 3;
+        panel.add(sellFish, con);
+        
+        JButton quitButton = new JButton("Quit");
+        con.gridx = 0;
+        con.gridy = 4;
+        con.gridwidth = 3;
+        panel.add(quitButton, con);
+        
+        ActionListener al = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CardLayout cl = (CardLayout)(cards.getLayout());
+                if(e.getSource() == buyBones){
+                    if (player.coins >= 5) {
+                        player.coins = player.coins - 5;
+                        player.bones++;
+                        if(player.coins < 5)
+                            buyBones.setEnabled(false);
+                        if(player.coins < 2)
+                            buyKibble.setEnabled(false);
+                    } else {
+                        buyBones.setEnabled(false);
+                    }
+                    shopHeader.setText("<html><div style='text-align:center;'><h1>Welcome to the pet shop!</h1>"
+                            + "<h3>You have " + player.coins+" coins.<br/>What would you like to do?</h3></html>");
+                    
+                }else if(e.getSource() == buyKibble){
+                    if (player.coins >= 2) {
+                        player.coins -= 2;
+                        player.kibble++;
+                        if(player.coins < 5)
+                            buyBones.setEnabled(false);
+                        if(player.coins < 2)
+                            buyKibble.setEnabled(false);
+                    } else {
+                        buyKibble.setEnabled(false);
+                    }
+                    shopHeader.setText("<html><div style='text-align:center;'><h1>Welcome to the pet shop!</h1>"
+                            + "<h3>You have " + player.coins + " coins.<br/>What would you like to do?</h3></html>");
+                }else if(e.getSource() == sellFish){
+                    if(player.fish > 0){
+                        player.fish--;
+                        if(player.fish < 1)
+                            sellFish.setEnabled(false);
+                        player.coins+=2;
+                    }else
+                        sellFish.setEnabled(false);
+                    shopHeader.setText("<html><div style='text-align:center;'><h1>Welcome to the pet shop!</h1>"
+                            + "<h3>You have " + player.coins + " coins.<br/>What would you like to do?</h3></html>");
+                    if (player.coins >= 5) {
+                        buyBones.setEnabled(true);
+                    } else if(player.coins >= 2){
+                        buyKibble.setEnabled(true);
+                    }
+                }else if(e.getSource() == quitButton){
+                    cl.show(cards, MAINPANEL);
+                }
+            }
+        };
+        buyBones.addActionListener(al);
+        buyKibble.addActionListener(al);
+        sellFish.addActionListener(al);
+        quitButton.addActionListener(al);
+        
+        ComponentAdapter ca = new ComponentAdapter(){
+            @Override
+            public void componentShown(ComponentEvent e){
+                if(player.coins < 5){
+                    buyBones.setEnabled(false);
+                    buyKibble.setEnabled(false);
+                }else{
+                    buyBones.setEnabled(true);
+                    buyKibble.setEnabled(true);
+                }
+                if(player.fish <= 0)
+                    sellFish.setEnabled(false);
+                else
+                    sellFish.setEnabled(true);
+            }
+        };
+        panel.addComponentListener(ca);
+        
+        return panel;
+    }
+    
+    private JPanel patPet(){
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridBagLayout());
+        //panel.setLayout(null);
+        //panel.setLayout(new GridLayout(0,2));
+        panel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        GridBagConstraints con = new GridBagConstraints();
+        
+        con.fill = GridBagConstraints.HORIZONTAL;
+        con.gridx = 0;
+        con.gridy = 0;
+        //panel.add(Box.createHorizontalGlue(), con);
+        
+        
+        JLabel playerInfoHeaderLabel = new JLabel("<html><h1>Pat pet:</h1></html>",JLabel.CENTER);
+        con.fill = GridBagConstraints.HORIZONTAL;
+        con.gridx = 0;
+        con.gridy = 0;
+        con.gridwidth = 3;
+        con.weightx = 0;
+        panel.add(playerInfoHeaderLabel, con);
+        
+        JLabel emotionString = new JLabel("<html><h2>"+pet.name+" is felling "+pet.emotion+"</h2></html>",JLabel.CENTER);
+        con.fill = GridBagConstraints.HORIZONTAL;
+        con.gridx = 0;
+        con.gridy = 1;
+        con.gridwidth = 3;
+        con.weightx = 0;
+        panel.add(emotionString, con);
+        
+        JLabel emotion = new JLabel(petEmotion());
+        con.fill = GridBagConstraints.HORIZONTAL;
+        con.gridx = 0;
+        con.gridy = 2;
+        con.gridwidth = 3;
+        con.weightx = 0;
+        panel.add(emotion, con);
+        
+        JLabel patOutput = new JLabel("<html><h3>"+pet.name+" looks very pettable</h3><html>",JLabel.CENTER);
+        con.fill = GridBagConstraints.HORIZONTAL;
+        con.gridx = 0;
+        con.gridy = 3;
+        con.gridwidth = 3;
+        con.weightx = 0;
+        panel.add(patOutput, con);
+        
+        JButton patPetButton = new JButton("Pat "+pet.name);
+        con.gridx = 1;
+        con.gridy = 4;
+        con.gridwidth = 1;
+        con.weightx = 1;
+        panel.add(patPetButton, con);
+        
+        JButton backButton = new JButton("Back to Main Menu");
+        con.gridx = 1;
+        con.gridy = 5;
+        con.gridwidth = 1;
+        con.weightx = 1;
+        panel.add(backButton, con);
+        
+        ActionListener al = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CardLayout cl = (CardLayout)(cards.getLayout());
+                if(e.getSource() == patPetButton){
+                    int rand = (int) (Math.random() * 10);
+                    if(rand >= 8){
+                        if(pet.happiness >= 2){
+                            pet.happiness-=2;
+                            pet.changeHappiness();
+                            emotion.setIcon(petEmotion());
+                            patOutput.setText("<html><h3>"+pet.name+" didn't like that! They grow annoyed.</h3><html>");
+                        }
+                    }else{
+                        if(pet.happiness < 10){
+                            pet.happiness++;
+                            pet.changeHappiness();
+                            emotion.setIcon(petEmotion());
+                            patOutput.setText("<html><h3>"+pet.name+" liked that! They feel a bit better.</h3><html>");
+                        }else{
+                            pet.happiness++;
+                            pet.changeHappiness();
+                            emotion.setIcon(petEmotion());
+                            patOutput.setText("<html><h3>"+pet.name+" doesn't want pets but will let you because it makes you happy.</h3><html>");
+                        }
+                    }
+                } else if (e.getSource() == backButton) {
+                    System.out.println("Returning to main menu");
+                    cl.show(cards, MAINPANEL);
+                }
+            }
+        };
+        patPetButton.addActionListener(al);
+        backButton.addActionListener(al);
+        ComponentAdapter ca = new ComponentAdapter(){
+            @Override
+            public void componentShown(ComponentEvent e){
+                emotion.setIcon(petEmotion());
+                patOutput.setText("<html><h3>"+pet.name+" looks very pettable</h3><html>");
+            }
+        };
+        panel.addComponentListener(ca);
+        
+        return panel;
+    }
+    
+    private JPanel cleanPet(){
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridBagLayout());
+        //panel.setLayout(null);
+        //panel.setLayout(new GridLayout(0,2));
+        panel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        GridBagConstraints con = new GridBagConstraints();
+        
+        con.fill = GridBagConstraints.HORIZONTAL;
+        con.gridx = 0;
+        con.gridy = 0;
+        //panel.add(Box.createHorizontalGlue(), con);
+        
+        
+        JLabel cleanPetHeader = new JLabel("<html><h1>Clean Pet:</h1></html>",JLabel.CENTER);
+        con.fill = GridBagConstraints.HORIZONTAL;
+        con.gridx = 0;
+        con.gridy = 0;
+        con.gridwidth = 3;
+        con.weightx = 0;
+        panel.add(cleanPetHeader, con);
+        
+        JLabel emotion = new JLabel(petEmotion());
+        con.fill = GridBagConstraints.HORIZONTAL;
+        con.gridx = 0;
+        con.gridy = 1;
+        con.gridwidth = 3;
+        con.weightx = 0;
+        panel.add(emotion, con);
+        
+        JLabel petEmotionMessage = new JLabel("<html><h3>Clean Me</h3></html>",JLabel.CENTER);
+        con.fill = GridBagConstraints.HORIZONTAL;
+        con.gridx = 0;
+        con.gridy = 2;
+        con.gridwidth = 3;
+        con.weightx = 0;
+        panel.add(petEmotionMessage, con);
+        
+        JButton cleanPet = new JButton("Clean "+pet.name);
+        con.gridx = 0;
+        con.gridy = 3;
+        con.gridwidth = 3;
+        panel.add(cleanPet, con);
+        
+        JButton backButton = new JButton("Back to Main Menu");
+        con.gridx = 0;
+        con.gridy = 4;
+        con.gridwidth = 3;
+        panel.add(backButton, con);
+        
+        ActionListener al = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CardLayout cl = (CardLayout)(cards.getLayout());
+                if(e.getSource() == cleanPet){
+                    if(pet.happiness >1){
+                        pet.happiness--;
+                        pet.clean++;
+                        pet.changeHappiness();
+                        emotion.setIcon(petEmotion());
+                        if(pet.happiness < 1)
+                            cleanPet.setEnabled(false);
+                        petEmotionMessage.setText("<html><h3>" + pet.name + " gets cleaner, but isn't happy about it.</h3><html>");
+                    }else{
+                        petEmotionMessage.setText("<html><h3>" + pet.name + " is too unhappy to cooperate with a clean.</h3><html>");
+                        cleanPet.setEnabled(false);
+                    }
+                } else if (e.getSource() == backButton) {
+                    System.out.println("Returning to main menu");
+                    cl.show(cards, MAINPANEL);
+                }
+            }
+        };
+        cleanPet.addActionListener(al);
+        backButton.addActionListener(al);
+        ComponentAdapter ca = new ComponentAdapter(){
+            @Override
+            public void componentShown(ComponentEvent e){
+                emotion.setIcon(petEmotion());
+                if(pet.happiness > 0)
+                    cleanPet.setEnabled(true);
+                if(pet.clean > 0 && pet.happiness > 2){
+                    petEmotionMessage.setText("<html><h3>" + pet.name + " looks a little dirty, give them a clean!</h3><html>");
+                    cleanPet.setEnabled(true);
+                }else if(pet.clean > 0 && pet.happiness <= 2){
+                    petEmotionMessage.setText("<html><h3>" + pet.name + " looks a little dirty, but isn't in the mood for a clean!</h3><html>");
+                    cleanPet.setEnabled(false);
+                }else if(pet.clean >= 10){
+                    petEmotionMessage.setText("<html><h3>" + pet.name + " doesn't look dirty!</h3><html>");
+                    cleanPet.setEnabled(false);
+                }
+            }
+        };
+        panel.addComponentListener(ca);
+        
+        return panel;
+    }
+    
+    private JPanel fishGame(){
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridBagLayout());
+        //panel.setLayout(null);
+        //panel.setLayout(new GridLayout(0,2));
+        panel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        GridBagConstraints con = new GridBagConstraints();
+        
+        con.fill = GridBagConstraints.HORIZONTAL;
+        con.gridx = 0;
+        con.gridy = 0;
+        //panel.add(Box.createHorizontalGlue(), con);
+        
+        
+        JLabel fishingGameHeader = new JLabel("<html><h1>Fishing Game</h1></html>",JLabel.CENTER);
+        con.fill = GridBagConstraints.HORIZONTAL;
+        con.gridx = 0;
+        con.gridy = 0;
+        con.gridwidth = 3;
+        con.weightx = 0;
+        panel.add(fishingGameHeader, con);
+        
+        JLabel fishingRules = new JLabel("<html><div style='text-align:center;'><h3>This is the fishing game. Send "+pet.name+" into the pond to fish!<br/>"
+                + "They won't get any fish when they want a bath"+"</h3></html>",JLabel.CENTER);
+        con.fill = GridBagConstraints.HORIZONTAL;
+        con.gridx = 0;
+        con.gridy = 1;
+        con.gridwidth = 3;
+        con.weightx = 0;
+        panel.add(fishingRules, con);
+        
+        JLabel fishImage = new JLabel(new ImageIcon("sprites/clear.png"),JLabel.CENTER);
+        con.fill = GridBagConstraints.HORIZONTAL;
+        con.gridx = 0;
+        con.gridy = 2;
+        con.gridwidth = 3;
+        con.weightx = 0;
+        panel.add(fishImage, con);
+        JLabel fishingPrompt = new JLabel("Lets go fishing!",JLabel.CENTER);
+        con.fill = GridBagConstraints.HORIZONTAL;
+        con.gridx = 0;
+        con.gridy = 3;
+        con.gridwidth = 3;
+        con.weightx = 0;
+        panel.add(fishingPrompt, con);
+        
+        JButton fishButton = new JButton("Send "+pet.name+" fishing!");
+        con.gridx = 0;
+        con.gridy = 4;
+        con.gridwidth = 3;
+        panel.add(fishButton, con);
+        
+        JButton backButton = new JButton("Back to Main Menu");
+        con.gridx = 0;
+        con.gridy = 5;
+        con.gridwidth = 3;
+        panel.add(backButton, con);
+    
+        ActionListener al = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CardLayout cl = (CardLayout)(cards.getLayout());
+                if(e.getSource() == fishButton){
+                    if(pet.clean >0){
+                        int rand = (int) (Math.random() * 10);
+                        int fishSize = (int) ((Math.random()*10) % 3)+1;
+                        if (rand <= 4){
+                            switch(fishSize){
+                                case 1:
+                                    player.fish++;
+                                    pet.clean-=2;
+                                    System.out.println("small");
+                                    fishImage.setIcon(new ImageIcon("sprites/fishSmall.png"));
+                                    fishingPrompt.setText("You caught a small fish! Brining your total fish count to "+player.fish);
+                                    break;
+                                case 2:
+                                    player.fish+=2;
+                                    pet.clean-=2;
+                                    System.out.println("medium");
+                                    fishImage.setIcon(new ImageIcon("sprites/fishMedium.png"));
+                                    fishingPrompt.setText("You caught a medium fish! Brining your total fish count to "+player.fish);
+                                    break;
+                                case 3:
+                                    player.fish+=3;
+                                    pet.clean-=2;
+                                    System.out.println("large");
+                                    fishImage.setIcon(new ImageIcon("sprites/fishLarge.png"));
+                                    fishingPrompt.setText("You caught a large fish! Brining your total fish count to "+player.fish);
+                                    break;
+                                default:
+                                    System.out.println(fishSize);
+                                    fishImage.setIcon(new ImageIcon("sprites/clear.png"));
+                                    break;
+                            }
+                        }else{
+                            pet.clean--;
+                            System.out.println("found noting");
+                            fishingPrompt.setText("You you didn't catch any fish :(");
+                            fishImage.setIcon(new ImageIcon("sprites/clear.png"));
+                            
+                        }
+                        
+                    }else{
+                        fishingPrompt.setText(pet.name+" is too dirty and doesn't want to go fishing!");
+                        System.out.println(pet.name+" is too dirty and doesn't want to go fishing!");
+                    }
+                } else if (e.getSource() == backButton) {
+                    System.out.println("Returning to main menu");
+                    cl.show(cards, MAINPANEL);
+                }
+            }
+        };
+        fishButton.addActionListener(al);
+        backButton.addActionListener(al);
+        ComponentAdapter ca = new ComponentAdapter(){
+            @Override
+            public void componentShown(ComponentEvent e){
+                fishImage.setIcon(new ImageIcon("sprites/clear.png"));
+                fishingPrompt.setText("Lets go fishing!");
+            }
+        };
+        panel.addComponentListener(ca);
+        
+        return panel;
+    }
     public void cardCreate(Container pane){
         JPanel comboBoxPane = new JPanel();
-        String comboBoxItems[] = {WELCOMPANEL, NEWSAVEPANEL, MAINPANEL};
+        String comboBoxItems[] = {WELCOMPANEL, NEWSAVEPANEL, MAINPANEL, SHOWINFOPANEL, SHOPPANEL, PATPETPANEL, CLEANPETPANEL, FISHPANEL};
         JComboBox cb = new JComboBox(comboBoxItems);
         cb.setEditable(false);
         cb.addItemListener(this);
         comboBoxPane.add(cb);
-        
+        player = new Player("test player");
+        pet = new Pet("PLACEHOLDER");
         // create the cards
         JPanel card1 = welcome();
         JPanel card2 = newSave();
-        JPanel card3 = mainMenu();
+        JPanel card3 = loadSave();
+        JPanel card4 = mainMenu();
+        JPanel card5 = showInfo();
+        JPanel card6 = shopMenu();
+        JPanel card7 = patPet();
+        JPanel card8 = cleanPet();
+        JPanel card9 = fishGame();
         
         
         cards = new JPanel(new CardLayout());
         cards.add(card1, WELCOMPANEL);
         cards.add(card2, NEWSAVEPANEL);
-        cards.add(card3, MAINPANEL);
+        cards.add(card3, LOADSAVEPANEL);
+        cards.add(card4, MAINPANEL);
+        cards.add(card5, SHOWINFOPANEL);
+        cards.add(card6, SHOPPANEL);
+        cards.add(card7, PATPETPANEL);
+        cards.add(card8, CLEANPETPANEL);
+        cards.add(card9, FISHPANEL);
         
-        pane.add(comboBoxPane,BorderLayout.PAGE_END);
+        //pane.add(comboBoxPane,BorderLayout.PAGE_END);
         pane.add(cards,BorderLayout.CENTER);
-        
+    
     }
     
     @Override
