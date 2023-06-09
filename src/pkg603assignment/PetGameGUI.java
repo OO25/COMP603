@@ -34,6 +34,7 @@ public class PetGameGUI implements ItemListener {
     Pet pet;
     DB_Operations dboperations = new DB_Operations();
     
+    // returns the image for the pet with the corect species
     private ImageIcon petEmotion(){
         ImageIcon image;
         String PET = pet.species;
@@ -54,6 +55,7 @@ public class PetGameGUI implements ItemListener {
         return image;
     }
     
+    // displays the welcome menue where you select to load a save make a new save or quit the game
     private JPanel welcome(){
         int ButtonWidth = 300;
         int ButtonHeight = 25;
@@ -102,6 +104,7 @@ public class PetGameGUI implements ItemListener {
         return panel;
     }
     
+    // displays the fields that the user needs to input into to customise their save file
     private JPanel newSave(){
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
@@ -252,6 +255,7 @@ public class PetGameGUI implements ItemListener {
         return panel;
     }
     
+    // a drop down menu containing all of the save files for the user to select which one to load
     private JPanel loadSave(){
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
@@ -333,6 +337,8 @@ public class PetGameGUI implements ItemListener {
         
         return panel;
     }
+    
+    // the main menu panel which has all of the buttons that lead to the other panels of the game or quit the game and save your data
     private JPanel mainMenu(){
         int ButtonWidth = 300;
         int ButtonHeight = 25;
@@ -415,6 +421,7 @@ public class PetGameGUI implements ItemListener {
         return panel;
     }
     
+    // displays the information of the player and pet
     private JPanel showInfo(){
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
@@ -488,6 +495,7 @@ public class PetGameGUI implements ItemListener {
         return panel;
     }
     
+    // allows the user to purchase food and sell fish
     private JPanel shopMenu(){
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
@@ -611,6 +619,7 @@ public class PetGameGUI implements ItemListener {
         return panel;
     }
     
+    // allows the player to pat their pet or feed it for it to gain happiness (petting sometimes makes them upset)
     private JPanel patPet(){
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
@@ -763,6 +772,7 @@ public class PetGameGUI implements ItemListener {
         return panel;
     }
     
+    // allows the user to clean their pet after taking them fishing, this will make them unhappy
     private JPanel cleanPet(){
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
@@ -860,6 +870,7 @@ public class PetGameGUI implements ItemListener {
         return panel;
     }
     
+    // lets the user send their pet fishing, the pet has a random chance of catching something but when it goes in the water it gets dirty
     private JPanel fishGame(){
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
@@ -988,6 +999,7 @@ public class PetGameGUI implements ItemListener {
         return panel;
     }
     
+    // a function that sets the information on all of the panels after a save has been created or chosen
     public void finalPrep(){
         JPanel card4 = mainMenu();
         JPanel card5 = showInfo();
@@ -1005,6 +1017,7 @@ public class PetGameGUI implements ItemListener {
         
     }
     
+    // a function that creates the welcome menu, creats the new save menu, creates the load save menu
     public void cardCreate(Container pane){
         JPanel comboBoxPane = new JPanel();
         String comboBoxItems[] = {WELCOMPANEL, NEWSAVEPANEL, MAINPANEL, SHOWINFOPANEL, SHOPPANEL, PATPETPANEL, CLEANPETPANEL, FISHPANEL};
@@ -1028,6 +1041,7 @@ public class PetGameGUI implements ItemListener {
     
     }
     
+    // detects if there is a button clicked in teh dev tools
     @Override
     public void itemStateChanged(ItemEvent evt){
         CardLayout cl = (CardLayout)(cards.getLayout());
@@ -1035,6 +1049,7 @@ public class PetGameGUI implements ItemListener {
         System.out.println(evt);
     }
     
+    // displays all of the panels for the user to see
     public static void createAndShowGUI(){
         JFrame frame = new JFrame("test cards");
         frame.setSize(SCREENWIDTH,SCREENHEIGHT);
@@ -1047,6 +1062,7 @@ public class PetGameGUI implements ItemListener {
         System.out.println("create test");
     }
     
+    // runs everything
     public static void main(String[] args) {
         javax.swing.SwingUtilities.invokeLater(new Runnable(){
             public void run(){
@@ -1056,13 +1072,8 @@ public class PetGameGUI implements ItemListener {
         
     }
 }
-
-/*JButton buttonB = new JButton(new AbstractAction("choice B"){ // start of button
-            @Override
-            public void actionPerformed(ActionEvent e){
-                System.out.println("test action B");
-                CardLayout cl = (CardLayout)(cards.getLayout());
-                //cl.show(cards, (String)evt.getItem());
-                cl.first(cards);
-            }
-        }); // end of button */
+/**
+ * all of the action listeners just listen to the buttons and do actions depending on which button is pressed
+ * all of the component shown functions detect if the panel is being displayed and will set data accordingly
+ * this is useful when information is changed outside of any given panel as they cant update each other without making it confusing
+ */
