@@ -197,12 +197,10 @@ public class PetGameGUI implements ItemListener {
                         */
                         player = new Player(userName.getText().trim());
                         if(cat.isSelected()){
-                            System.out.println("Pet type: cat");
                             pet = new Cat(petName.getText().trim());
                              
                         }else{
                             pet = new Dog(petName.getText().trim());
-                            System.out.println("Pet type: dog");
                             
                         }
                         
@@ -294,16 +292,7 @@ public class PetGameGUI implements ItemListener {
             public void actionPerformed(ActionEvent e) {
                 CardLayout cl = (CardLayout)(cards.getLayout());
                 if(e.getSource() == finishButton){
-                    /**
-                     * to make this work we need to turn the saves into an array and then
-                     * use the user inputted choice of save (given by the selectedSaveSlot variable)
-                     * then we can load everything and define the player with player name
-                     * and pet with pet name and assign all of the values that can change from the start
-                     */
                     player = dboperations.loadPlayer(saveList.getSelectedIndex()+1);
-                    System.out.println(player);
-                    System.out.println(player.pet);
-                    System.out.println(player.pet.species);
                     
                     if("cat".equals(player.pet.species)) {
                         pet = new Cat(player.pet.name);
@@ -322,15 +311,13 @@ public class PetGameGUI implements ItemListener {
                         
                     
                     
-                    System.out.println("Selet File");
                     selectedSaveSlot = saveList.getSelectedIndex();
                     finalPrep();
                     cl.show(cards, MAINPANEL);
                 }else if (e.getSource() == saveList){
-                    System.out.println(saveList.getSelectedIndex()+" selected");
+                    //System.out.println(saveList.getSelectedIndex()+" selected");
                 }
             }
-            //selectedIndex = 1;
         };
         saveList.addActionListener(al);
         finishButton.addActionListener(al);
@@ -376,26 +363,18 @@ public class PetGameGUI implements ItemListener {
             public void actionPerformed(ActionEvent e) {
                 CardLayout cl = (CardLayout)(cards.getLayout());
                 if (e.getSource() == buttonA) {
-                    System.out.println("show info");
                     cl.show(cards, SHOWINFOPANEL);
                 } else if (e.getSource() == buttonB) {
-                    System.out.println("show shop");
                     cl.show(cards, SHOPPANEL);
                 } else if (e.getSource() == buttonC){
-                    System.out.println("show pat pet");
                     cl.show(cards, PATPETPANEL);
                 } else if (e.getSource() == buttonD){
-                    System.out.println("show clean pet");
                     cl.show(cards, CLEANPETPANEL);
                 } else if (e.getSource() == buttonE){
                     cl.show(cards, FISHPANEL);
-                    System.out.println("show fishing game");
                 } else if (e.getSource() == buttonF){
-                    
                     player.pet = pet;
-                    
                     dboperations.playerSave(player);
-                     
                     System.out.println("Game Exited");
                     System.exit(0);
                 } else {
@@ -476,7 +455,6 @@ public class PetGameGUI implements ItemListener {
             public void actionPerformed(ActionEvent e) {
                 CardLayout cl = (CardLayout)(cards.getLayout());
                 if(e.getSource() == backButton){
-                    System.out.println("Returning to main menu");
                     cl.show(cards, MAINPANEL);
                 }
             }
@@ -722,7 +700,6 @@ public class PetGameGUI implements ItemListener {
                                     patOutput.setText("<html><h3>Kibble is "+pet.name+"'s favourite food, they really liked that!</h3><html>");
                                     if(player.kibble<1)
                                         feedPetButton.setEnabled(false);
-                                    System.out.println("used kibbel");
                                 }
                                 break;
                             case "Bone":
@@ -739,7 +716,6 @@ public class PetGameGUI implements ItemListener {
                         }
                     }
                 }else if (e.getSource() == backButton) {
-                    System.out.println("Returning to main menu");
                     cl.show(cards, MAINPANEL);
                 }
             }
@@ -840,7 +816,6 @@ public class PetGameGUI implements ItemListener {
                         cleanPet.setEnabled(false);
                     }
                     } else if (e.getSource() == backButton) {
-                    System.out.println("Returning to main menu");
                     cl.show(cards, MAINPANEL);
                 }
             }
@@ -938,32 +913,27 @@ public class PetGameGUI implements ItemListener {
                                 case 1:
                                     player.fish++;
                                     pet.clean-=2;
-                                    System.out.println("small");
                                     fishImage.setIcon(new ImageIcon("sprites/fishSmall.png"));
                                     fishingPrompt.setText("You caught a small fish! Brining your total fish count to "+player.fish);
                                     break;
                                 case 2:
                                     player.fish+=2;
                                     pet.clean-=2;
-                                    System.out.println("medium");
                                     fishImage.setIcon(new ImageIcon("sprites/fishMedium.png"));
                                     fishingPrompt.setText("You caught a medium fish! Brining your total fish count to "+player.fish);
                                     break;
                                 case 3:
                                     player.fish+=3;
                                     pet.clean-=2;
-                                    System.out.println("large");
                                     fishImage.setIcon(new ImageIcon("sprites/fishLarge.png"));
                                     fishingPrompt.setText("You caught a large fish! Brining your total fish count to "+player.fish);
                                     break;
                                 default:
-                                    System.out.println(fishSize);
                                     fishImage.setIcon(new ImageIcon("sprites/clear.png"));
                                     break;
                             }
                         }else{
                             pet.clean--;
-                            System.out.println("found noting");
                             fishingPrompt.setText("You didn't catch any fish :(");
                             fishImage.setIcon(new ImageIcon("sprites/clear.png"));
                             
@@ -972,11 +942,9 @@ public class PetGameGUI implements ItemListener {
                     }else{
                         fishImage.setIcon(new ImageIcon("sprites/clear.png"));
                         fishingPrompt.setText(pet.name+" is too dirty and doesn't want to go fishing!");
-                        System.out.println(pet.name+" is too dirty and doesn't want to go fishing!");
                         fishButton.setEnabled(false);
                     }
                 } else if (e.getSource() == backButton) {
-                    System.out.println("Returning to main menu");
                     cl.show(cards, MAINPANEL);
                 }
             }
@@ -1046,7 +1014,6 @@ public class PetGameGUI implements ItemListener {
     public void itemStateChanged(ItemEvent evt){
         CardLayout cl = (CardLayout)(cards.getLayout());
         cl.show(cards, (String)evt.getItem());
-        System.out.println(evt);
     }
     
     // displays all of the panels for the user to see
@@ -1059,7 +1026,6 @@ public class PetGameGUI implements ItemListener {
         panel.cardCreate(frame.getContentPane());
         
         frame.setVisible(true);
-        System.out.println("create test");
     }
     
     // runs everything
