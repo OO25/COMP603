@@ -65,6 +65,8 @@ public class PetGameGUI implements ItemListener {
         JLabel welcomeLabel = new JLabel("<html><div style='text-align:center'><h1>Welcome to the Pet Game!<p></h1>"+"Please Pick One:</html>", SwingConstants.CENTER);
         panel.add(welcomeLabel);
         
+        
+        
         JButton buttonA = new JButton("New Game Save");
         buttonA.setBounds((SCREENWIDTH-ButtonWidth)/2, 210, ButtonWidth, ButtonHeight);
         panel.add(buttonA);
@@ -295,21 +297,23 @@ public class PetGameGUI implements ItemListener {
                      * and pet with pet name and assign all of the values that can change from the start
                      */
                     player = dboperations.loadPlayer(saveList.getSelectedIndex()+1);
-                    System.out.println("|" + player.pet.species + "|");
-                    System.out.println(player.pet.FavFood);
+                    System.out.println(player);
+                    System.out.println(player.pet);
+                    System.out.println(player.pet.species);
+                    
                     if("cat".equals(player.pet.species)) {
                         pet = new Cat(player.pet.name);
                         pet.emotion = player.pet.emotion;
                         pet.happiness = player.pet.happiness;
                         pet.clean = player.pet.clean;
-                        pet.FavFood = "Kibble";
+                        
                     }
                     else {
                         pet = new Dog(player.pet.name);
                         pet.emotion = player.pet.emotion;
                         pet.happiness = player.pet.happiness;
                         pet.clean = player.pet.clean;
-                        pet.FavFood = "Bones";
+                        
                     }
                         
                     

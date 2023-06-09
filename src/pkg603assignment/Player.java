@@ -24,7 +24,7 @@ public class Player {
         this.bones = 0;
         this.kibble = 0;
     }
-
+    //Constructors
     public Player(String name, int coins, int fish, int bones, int kibble) {
         this.name = name;
         this.coins = coins;

@@ -16,6 +16,7 @@ public class Cat extends Pet {
         species = "cat";
     }
     
+    //Unsured art, think of it as an eatser egg if you read the code <3
     @Override
     public void Happy() {
         System.out.println("/\\_/\\");

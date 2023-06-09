@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author Sandra
+ * @author Andrew
  */
 public class DB_Operations {
     
@@ -113,7 +113,7 @@ public class DB_Operations {
         
         
     }
-     
+    //Loads a player with input ID from the databse 
     public Player loadPlayer(int ID) {
         Player player = new Player("");
         player.pet = new Pet(null);
@@ -143,7 +143,7 @@ public class DB_Operations {
         
         return player;
     }
-    
+    //Returns a list of players for use in loading save interface
     public ArrayList<String> List() {
         
         ArrayList<String> playerList = new ArrayList<String>();
@@ -170,36 +170,6 @@ public class DB_Operations {
     }
         
     return playerList;
-    }
-     
-     
-    public static void main(String[] args) {
-        
-        Player player = new Player("andrew");
-        player.pet = new Cat("Billy");
-        player.coins = 77;
-        player.pet.species = "CAT";
-        
-        
-       
-
-        DB_Operations dboperations = new DB_Operations();
-        
-        
-       
-        
-        player.pet.fish = 12;
-        
-        dboperations.playerSave(player);
-        
-        
-        
-        
-        
-       
-
-        dboperations.dbManager.closeConnections();
-
-    }
+    }   
 }
 

@@ -6,7 +6,7 @@ package pkg603assignment;
 
 /**
  *
- * @author Sandra
+ * @author Andrew
  */
 public class Dog extends Pet {
     
@@ -15,7 +15,7 @@ public class Dog extends Pet {
         FavFood = "Bone";
         species = "dog";
     }
-    
+     //Unsured art, think of it as an eatser egg if you read the code <3
     @Override
     public void Happy() {
         System.out.println("/\\___/\\");
