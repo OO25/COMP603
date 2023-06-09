@@ -14,9 +14,10 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author Sandra
+ * @author Andrew
  */
 public class DB_Manager {
+    //Holds URL, connection and login data
     private static final String USER_NAME = "abc";
     private static final String PASSWORD = "abc";
     public static Connection conn;
@@ -24,6 +25,7 @@ public class DB_Manager {
     
      private static final String URL = "jdbc:derby://localhost:1527/Test1;create=true";
      
+     //Establishes connection
      public void establishConnection()
      {
          try{
@@ -38,20 +40,11 @@ public class DB_Manager {
         establishConnection();
     }
 
-    public static void main(String[] args) {
-        DB_Manager dbManager = new DB_Manager();
-
-        System.out.println(dbManager.getConnection());
-
-    }
-
+      //Getter
     public Connection getConnection() {
         return this.conn;
     }
-    
-  
-
-
+    //Closes connection
     public void closeConnections() {
         if (conn != null) {
             try {
@@ -62,6 +55,7 @@ public class DB_Manager {
         }
     }
 
+    //Used to search load data in LoadPlayer
     public ResultSet myQuery(String sql) {
 
         Connection connection = this.conn;
@@ -76,20 +70,5 @@ public class DB_Manager {
             e.printStackTrace();
         }
         return resultSet;
-    }
-
-    public void myUpdate(String sql) {
-
-        Connection connection = this.conn;
-        Statement statement = null;
-        ResultSet resultSet = null;
-
-        try {
-            statement = connection.createStatement();
-            statement.executeUpdate(sql);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }

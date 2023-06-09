@@ -19,7 +19,7 @@ public class Pet {
     int fish;
     
     public Pet(String name){
-        this.age = 0;
+        this.age = (int)Math.floor(Math.random() * (10 - 1 +1) + 1);
         this.name = name;
         this.emotion = "happy";
         this.happiness = 5;
@@ -89,6 +89,10 @@ public class Pet {
         }else if(this.happiness <= 2) {
             this.emotion = "angry";
         }
+    }
+
+    void setClean(int clean) {
+        this.clean = clean;
     }
     
 }

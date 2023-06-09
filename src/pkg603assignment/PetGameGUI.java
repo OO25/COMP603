@@ -32,6 +32,7 @@ public class PetGameGUI implements ItemListener {
     int selectedSaveSlot;
     Player player;
     Pet pet;
+    DB_Operations dboperations = new DB_Operations();
     
     private ImageIcon petEmotion(){
         ImageIcon image;
@@ -193,12 +194,20 @@ public class PetGameGUI implements ItemListener {
                         if(cat.isSelected()){
                             System.out.println("Pet type: cat");
                             pet = new Cat(petName.getText().trim());
+                             
                         }else{
                             pet = new Dog(petName.getText().trim());
                             System.out.println("Pet type: dog");
+                            
                         }
+                        
                         finalPrep();
+                        player.pet = pet;
+                        dboperations.insertPlayer(player);
                         cl.show(cards, MAINPANEL);
+                    }
+                    else {
+                        
                     }
                 }
                 if(cat.isSelected()){
@@ -228,7 +237,7 @@ public class PetGameGUI implements ItemListener {
             }
             
             public void changed(){
-                if(!userName.getText().isEmpty() && !petName.getText().isEmpty())
+                if(!userName.getText().isEmpty() && !petName.getText().isEmpty() && userName.getText().trim().length() > 0)
                     finishButton.setEnabled(true);
                 else
                     finishButton.setEnabled(false);
@@ -246,7 +255,7 @@ public class PetGameGUI implements ItemListener {
         panel.setLayout(new GridBagLayout());
         panel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
         GridBagConstraints con = new GridBagConstraints();
-        String[] saveStrings = {"temp 1", "temp 2", "temp 3", "temp 4"};
+        String[] saveStrings = dboperations.List().toArray(new String[0]);
         
         con.fill = GridBagConstraints.HORIZONTAL;
         con.gridx = 0;
@@ -285,6 +294,26 @@ public class PetGameGUI implements ItemListener {
                      * then we can load everything and define the player with player name
                      * and pet with pet name and assign all of the values that can change from the start
                      */
+                    player = dboperations.loadPlayer(saveList.getSelectedIndex()+1);
+                    System.out.println("|" + player.pet.species + "|");
+                    System.out.println(player.pet.FavFood);
+                    if("cat".equals(player.pet.species)) {
+                        pet = new Cat(player.pet.name);
+                        pet.emotion = player.pet.emotion;
+                        pet.happiness = player.pet.happiness;
+                        pet.clean = player.pet.clean;
+                        pet.FavFood = "Kibble";
+                    }
+                    else {
+                        pet = new Dog(player.pet.name);
+                        pet.emotion = player.pet.emotion;
+                        pet.happiness = player.pet.happiness;
+                        pet.clean = player.pet.clean;
+                        pet.FavFood = "Bones";
+                    }
+                        
+                    
+                    
                     System.out.println("Selet File");
                     selectedSaveSlot = saveList.getSelectedIndex();
                     finalPrep();
@@ -352,10 +381,11 @@ public class PetGameGUI implements ItemListener {
                     cl.show(cards, FISHPANEL);
                     System.out.println("show fishing game");
                 } else if (e.getSource() == buttonF){
-                    /**
-                     * to make this work we just need to run some kind of save function
-                     * should be easy :)
-                     */
+                    
+                    player.pet = pet;
+                    
+                    dboperations.playerSave(player);
+                     
                     System.out.println("Game Exited");
                     System.exit(0);
                 } else {
@@ -968,6 +998,7 @@ public class PetGameGUI implements ItemListener {
         cards.add(card7, PATPETPANEL);
         cards.add(card8, CLEANPETPANEL);
         cards.add(card9, FISHPANEL);
+        
     }
     
     public void cardCreate(Container pane){

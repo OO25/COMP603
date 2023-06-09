@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,14 +26,15 @@ public class DB_Operations {
         dbManager = new DB_Manager();
     }
 
+    //Creates a table, just for testing and to make things simple so i dont have to type in SQL
     public void createTable() {
         try {
             Statement statement = dbManager.getConnection().createStatement();
             String newTableName = "PlayerData";
 
-            String sqlCreate = "create table " + newTableName + " ("
-                    + "PlayerName varchar(20), Coins int, Fish int, Bones int,  Kibble int, Species varchar(3),"
-                    + "Age int, PetName varchar(20), Happiness int,  PRIMARY KEY (PlayerName))";
+            String sqlCreate = "create table " + newTableName + " (" 
+                    + "ID int, PlayerName varchar(20), Coins int, Fish int, Bones int,  Kibble int, Species varchar(3),"
+                    + "Age int, PetName varchar(20), Happiness int,  PRIMARY KEY (ID))";
             statement.executeUpdate(sqlCreate);
 
 
@@ -41,34 +43,47 @@ public class DB_Operations {
         } catch (SQLException ex) {
             Logger.getLogger(DB_Operations.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
     }
-    
+    //Used when creating an inital save, creates a new save for the player
     public void insertPlayer(Player player) {
         try {
             // Prepare SQL statement for insertion
-            String sql = "INSERT INTO PlayerData (Playername, coins, fish, bones, kibble, species, age, petname, happiness) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO PlayerData (ID, Playername, coins, fish, bones, kibble, species, age, petname, happiness, clean) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement statement = dbManager.getConnection().prepareStatement(sql);
+            Statement stmt = dbManager.getConnection().createStatement();
 
-            // Set the values for the parameters from the Player object
-            statement.setString(1, player.name.toLowerCase());
-            statement.setInt(2, player.coins);
-            statement.setInt(3, player.fish);
-            statement.setInt(4, player.bones);
-            statement.setInt(5, player.kibble);
-            statement.setString(6, player.pet.species.toLowerCase());
-            statement.setInt(7, player.pet.age);
-            statement.setString(8, player.pet.name.toLowerCase());
-            statement.setInt(9, player.pet.happiness);
-
-            // Execute the insertion
+            
+            String query = "select count(*) from PLAYERDATA";
+            ResultSet rs = stmt.executeQuery(query);
+            rs.next();
+            int count = rs.getInt(1);
+            System.out.println("Number of records in the PLAYERDATA table: "+count);
+            
+            statement.setInt(1, count + 1);
+            statement.setString(2, player.name);
+            statement.setInt(3, player.coins);
+            statement.setInt(4, player.fish);
+            statement.setInt(5, player.bones);
+            statement.setInt(6, player.kibble);
+            statement.setString(7, player.pet.species.toLowerCase());
+            statement.setInt(8, player.pet.age);
+            statement.setString(9, player.pet.name);
+            statement.setInt(10, player.pet.happiness);
+            statement.setInt(11, player.pet.clean);
+            
             statement.executeUpdate();
             System.out.println("Data inserted successfully.");
 
-        } catch (SQLException e) {
+            rs.close();
+        } 
+        
+        catch (SQLException e) {
             e.printStackTrace();
         }
+        
     }
-    
+    //Saves a player into previously created row
      public void playerSave(Player player) {
         
         try {
@@ -79,33 +94,33 @@ public class DB_Operations {
                     + "FISH = " + player.fish + "," 
                     + "BONES =" + player.bones + ","
                     + "KIBBLE =" + player.kibble + ","
-                    + "SPECIES = '"+ player.pet.species.toLowerCase() + "' ,"
+                    + "SPECIES = '"+ player.pet.species + "' ,"
                     + "AGE ="+ player.pet.age + ","
-                    + "PETNAME = '"+ player.pet.name.toLowerCase() + "' ,"
-                    + "HAPPINESS =" + player.pet.happiness + " "
-                    + "WHERE PLAYERNAME = '"+ player.name.toLowerCase() +"'";
+                    + "PETNAME = '"+ player.pet.name + "' ,"
+                    + "HAPPINESS =" + player.pet.happiness + ", "
+                    + "CLEAN =" + player.pet.clean + " "
+                    + "WHERE PLAYERNAME = '"+ player.name +"'";
 
             
             int rowsAffected = statement.executeUpdate(sql);
             
-            System.out.println("Rows affected: " + rowsAffected);
-            System.out.println("Table updated successfully.");
+            
+            System.out.println("Table updated successfully." + rowsAffected);
             
         } catch (SQLException e) {
             e.printStackTrace();
         }
         
+        
     }
      
-    public Player loadPlayer(String playerName) {
-        Player player = new Player(playerName);
+    public Player loadPlayer(int ID) {
+        Player player = new Player("");
         player.pet = new Pet(null);
-        ResultSet rs = dbManager.myQuery("select * from PLAYERDATA where PLAYERNAME = '" + playerName + "'");
-
+        ResultSet rs = dbManager.myQuery("select * from PLAYERDATA where ID = " + ID + "");
         if (rs == null) {
             return null;
         }
-
         try {
             while (rs.next()) {
                 player.setName(rs.getString("PLAYERNAME"));
@@ -116,22 +131,53 @@ public class DB_Operations {
                 player.pet = new Pet(rs.getString("PETNAME"));
                 player.pet.setSpecies(rs.getString("SPECIES"));
                 player.pet.setAge(rs.getInt("AGE"));
-                player.pet.setHappiness(rs.getInt("HAPPINESS"));                        
+                player.pet.setHappiness(rs.getInt("HAPPINESS")); 
+                player.pet.setClean(rs.getInt("CLEAN"));
+                
             }
-
+            rs.close();
+            
         } catch (SQLException ex) {
             return null;
         }
-
+        
         return player;
+    }
+    
+    public ArrayList<String> List() {
+        
+        ArrayList<String> playerList = new ArrayList<String>();
+        
+        try {
+            
+        Connection connection = dbManager.getConnection();
+        Statement statement = connection.createStatement();
+
+        
+        ResultSet resultSet = statement.executeQuery("SELECT PLAYERNAME, COINS, PETNAME FROM PLAYERDATA");
+
+        while (resultSet.next()) {
+            String playerName = resultSet.getString("PLAYERNAME");
+            int coins = resultSet.getInt("COINS");
+            String petName = resultSet.getString("PETNAME");
+            playerList.add("NAME: " + playerName + " COINS: " + coins + " PET NAME: " + petName);
+        }
+
+        resultSet.close();
+        
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+        
+    return playerList;
     }
      
      
     public static void main(String[] args) {
         
-        Player player = new Player("Andrew");
+        Player player = new Player("andrew");
         player.pet = new Cat("Billy");
-        player.coins = 55;
+        player.coins = 77;
         player.pet.species = "CAT";
         
         
@@ -139,12 +185,16 @@ public class DB_Operations {
 
         DB_Operations dboperations = new DB_Operations();
         
-        dboperations.insertPlayer(player);
         
-        //player = dboperations.loadPlayer("Andrew");
+       
+        
+        player.pet.fish = 12;
+        
+        dboperations.playerSave(player);
         
         
-        System.out.println(player);
+        
+        
         
        
 
